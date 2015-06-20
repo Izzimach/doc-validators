@@ -1,5 +1,4 @@
 (ns doc-validators.sec1-assert
-  (:gen-class)
   (:require [clojure.core.async :as async :refer [go chan <! >! >!! <!!]
              clojure.stacktrace :refer [print-stack-trace]]))
 

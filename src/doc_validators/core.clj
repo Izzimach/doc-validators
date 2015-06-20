@@ -7,6 +7,3 @@
   (println "I'm gonna assert!")
   (assert false)
   (println "I asserted!"))
-
-
-
