@@ -2,8 +2,7 @@
   (:require [schema.core :as s]
             [doc-validators.sec2-destructuring :refer [forward-ballistic]]))
 
-(def OnlyNumbers
-  s/Int)
+(def OnlyNumbers s/Int)
 
 ;;
 ;; validate throws exception if the data is non-conforming
@@ -13,13 +12,34 @@
 (s/validate OnlyNumbers "argh")
 
 ;;
-;; check returns text describing data mismatch, or
-;; nil if the data conforms
+;; check returns nil where the data conforms, and
+;; error messages where it does not
 ;;
 
 (s/check OnlyNumbers 334)
 (s/check OnlyNumbers "argh")
+(s/check {:a OnlyNumbers :b OnlyNumbers} {:a 3 :b 'oops})
+(s/check [s/Int] [1 2 3 "argh"])
 
+;;
+;; sequence schema is usually used with seqs that are  all one type
+;;
+
+(s/check [s/Int] [1 2 3 4])
+
+;; full form is [one* optional* rest?]
+
+(def TaggedData [(s/one s/Str :label)
+                 (s/one s/Str :description)
+                 (s/one (s/either s/Symbol [s/Num]) :data)
+                 (s/optional [s/Keyword] :options)
+                 ;; no rest here
+                 ])
+
+(s/check TaggedData ["Quake 1" "Initial test data" [1 2 3]])
+(s/check TaggedData ["Quake 2" "re-scaled test data" 'quakedata [:normalize :fast]])
+(s/check TaggedData ["Quake 3" "Initial test data" [1.1 1.2 'x] 'argh])
+(s/explain TaggedData)
 
 (def DynamicsBodySchema
   {:px s/Num
@@ -65,7 +85,8 @@
 
 (DynamicsBody. 0 0 5 6 3 "argh")
 (DynamicsBody. 0 0 5 6 "argh" 3) ;; doesn't fail! you still need to check records
-(s/check DynamicsBody (DynamicsBody. 0 0 5 6 "argh" 3))
+(->> (DynamicsBody. 0 0 5 6 "argh" 3)
+     (s/check DynamicsBody))
 
 ;;
 ;; you can print out the schema definition if you need it
@@ -102,7 +123,6 @@
 (s/with-fn-validation
   (let [startbody (DynamicsBody. 0 0 5 6 1 "argh")]
     (schema-ballistic startbody {:gravity -1 :time 2}))) ;; wrong output!
-
 
 ;;
 ;; forward-ballistic returns a map; convert into a DynamicsBody record
