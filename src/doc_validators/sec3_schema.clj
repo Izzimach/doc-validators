@@ -30,16 +30,21 @@
 ;; full form is [one* optional* rest?]
 
 (def TaggedData [(s/one s/Str :label)
-                 (s/one s/Str :description)
-                 (s/one (s/either s/Symbol [s/Num]) :data)
-                 (s/optional [s/Keyword] :options)
-                 ;; no rest here
+                 (s/optional s/Keyword :option)
+                 ;; optional "rest" of values
+                 ;; note that all previous optional values must be present as well
+                 s/Num
                  ])
 
-(s/check TaggedData ["Quake 1" "Initial test data" [1 2 3]])
-(s/check TaggedData ["Quake 2" "re-scaled test data" 'quakedata [:normalize :fast]])
-(s/check TaggedData ["Quake 3" "Initial test data" [1.1 1.2 'x] 'argh])
+(s/check TaggedData ["Null data"])
+(s/check TaggedData ["Earthquake 1 data" :fast 1.1 1.2 1.3])
+(s/check TaggedData ["Earthquake 2 data" 1.1 1.2 :wrong!])
+(s/check TaggedData ["wrong?" 1.1 1.2 1.3])
 (s/explain TaggedData)
+
+;;
+;; maps and records
+;;
 
 (def DynamicsBodySchema
   {:px s/Num
