@@ -1,4 +1,4 @@
-(ns doc-validators.sec3-schema
+(ns doc-validators.sec4-herbert
   (:require [miner.herbert :as h]
             [doc-validators.sec2-destructuring :refer [forward-ballistic]]))
 

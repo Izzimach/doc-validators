@@ -9,7 +9,7 @@
 ;;
 
 (s/validate OnlyNumbers 3)
-(s/validate OnlyNumbers "argh")
+;;(s/validate OnlyNumbers "argh")
 
 ;;
 ;; check returns nil where the data conforms, and
@@ -60,14 +60,14 @@
    :time s/Num})
 
 
-(s/check DynamicsBodySchema
+#_(s/check DynamicsBodySchema
          {:px 0 :py 0 :vx 5 :vy 6 :mass 1 :id "cannonball"})
 
 
-(s/check DynamicsBodySchema
+#_(s/check DynamicsBodySchema
          {:px 0 :py 3 :vx 5 :vy nil :mass 1 :id "cannonball"})
 
-(s/validate DynamicsBodySchema
+#_(s/validate DynamicsBodySchema
          {:px 0 :pyy 3 :vx 5 :vy 6 :mass 1 :id "cannonball"})
 
 (s/check DynamicsBodySchema
@@ -111,8 +111,8 @@
   (apply + nums))
 
 (addnumbers [1 2 3])
-(addnumbers [1 2 "argh"]) ;; doesn't auto validate...
-(s/with-fn-validation (addnumbers [1 2 "argh"]))
+#_(addnumbers [1 2 "argh"]) ;; doesn't auto validate...
+#_(s/with-fn-validation (addnumbers [1 2 "argh"]))
 
 ;;
 ;; defrecord types are valid as well
@@ -125,7 +125,7 @@
         {:keys [gravity time]}        config]
     (forward-ballistic px py vx vy mass id time gravity)))
 
-(s/with-fn-validation
+#_(s/with-fn-validation
   (let [startbody (DynamicsBody. 0 0 5 6 1 "argh")]
     (schema-ballistic startbody {:gravity -1 :time 2}))) ;; wrong output!
 
@@ -142,7 +142,7 @@
     (-> (forward-ballistic px py vx vy mass id time gravity)
         map->DynamicsBody)))
 
-(s/with-fn-validation
+#_(s/with-fn-validation
   (let [startbody (DynamicsBody. 0 0 5 6 1 "argh")]
     (schema-ballistic-fixed startbody {:gravity -1 :time 2})))
 
